@@ -210,6 +210,7 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
 
+
     // Getting contacts Count
     public int getContactsCount() {
         String countQuery = "SELECT  * FROM " + TABLE_NAME_SURVEY;
