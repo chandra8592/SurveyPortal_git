@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:showDividers="end"
+    android:divider="@color/Black"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="rank"
+        android:id="@+id/rank" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="team"
+        android:id="@+id/team"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/rank"
+        android:layout_toEndOf="@+id/rank" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="for point"
+        android:id="@+id/forp"
+        android:paddingLeft="15dp"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/total"
+        android:layout_toStartOf="@+id/total" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Total point"
+        android:id="@+id/total"
+        android:paddingLeft="15dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
