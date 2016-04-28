@@ -136,10 +136,10 @@ public class DBHandler extends SQLiteOpenHelper {
         Details_db details = new Details_db();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String smtp=" select * from survey where surveyname=\"creed"+"\" and rowid="+qid;
+//        String smtp=" select * from survey where surveyname=\"creed"+"\" and rowid="+qid;
         String sqlquery=" select * from survey where surveyname=\""+surveyname+"\" and rowid="+qid;
 //        Cursor cursor = db.query(TABLE_NAME_SURVEY, new String[] {  KEY_Surveyname,KEY_Question,KEY_RESPONSE_1,KEY_RESPONSE_2,KEY_RESPONSE_3,KEY_RESPONSE_4, }, KEY_QID + "=?", new String[] { String.valueOf(qid) }, null, null, null, null);
-        Cursor cursor=db.rawQuery(smtp,null);
+        Cursor cursor=db.rawQuery(sqlquery,null);
         if (cursor.moveToFirst()) {
             do {
 //                Details_db details = new Details_db();
