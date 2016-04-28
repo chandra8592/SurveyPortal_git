@@ -131,21 +131,37 @@ public class DBHandler extends SQLiteOpenHelper {
         return detail;
     }
 
-    public Details_db getQuestion(int qid) {
+    public Details_db getQuestion(String surveyname,int qid) {
+        List<Details_db> detailsList = new ArrayList<Details_db>();
+        Details_db details = new Details_db();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String smtp=" select * from survey where surveyname=\"creed"+"\" and rowid=1";
+        String smtp=" select * from survey where surveyname=\"creed"+"\" and rowid="+qid;
+        String sqlquery=" select * from survey where surveyname=\""+surveyname+"\" and rowid="+qid;
 //        Cursor cursor = db.query(TABLE_NAME_SURVEY, new String[] {  KEY_Surveyname,KEY_Question,KEY_RESPONSE_1,KEY_RESPONSE_2,KEY_RESPONSE_3,KEY_RESPONSE_4, }, KEY_QID + "=?", new String[] { String.valueOf(qid) }, null, null, null, null);
         Cursor cursor=db.rawQuery(smtp,null);
-        if (cursor != null)
-            cursor.moveToFirst();
-        Log.i("info"," "+cursor);
+        if (cursor.moveToFirst()) {
+            do {
+//                Details_db details = new Details_db();
+                details.setQid(cursor.getShort(0));
+                details.setSurveyname(cursor.getString(1));
+                details.setQuestion(cursor.getString(2));
+                details.setResponse_1(cursor.getString(3));
+                details.setResponse_2(cursor.getString(4));
+                details.setResponse_3(cursor.getString(5));
+                details.setResponse_4(cursor.getString(6));
+                // Adding all details to list
+                detailsList.add(details);
+            }
+            while (cursor.moveToNext());
+            Log.i("my_info: ","getAllContacts>DBHandler. while-loop all data");
+        }
+        Log.i("my_info: ","getAllContacts>DBHandler. Fething & returning all data");
 
-        Details_db detail = new Details_db();
-        Log.i("info"," "+detail.getQuestion());
-        // return contact
-        return detail;
+        // return details list
+        return details;
     }
+
     // Getting All Contacts
     public List<Details_db> getAllContacts() {
         List<Details_db> detailsList = new ArrayList<Details_db>();

@@ -16,29 +16,29 @@ import com.creedglobal.survey.surveyportal.R;
 public class Question1 extends AppCompatActivity {
 
     TextView qno,question,opt1,opt2,opt3,opt4,pmsg;
-    int qid,totalquestion;
+    int qid=1,totalquestion;
+    String selectedSurvey;
     boolean selected=false;
-    long delayTime=2000;
+    long delayTime=1000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question1);
         qno=(TextView)findViewById(R.id.qid);
         question=(TextView)findViewById(R.id.question);
-
         opt1=(TextView)findViewById(R.id.option1);
         opt2=(TextView)findViewById(R.id.option2);
         opt3=(TextView)findViewById(R.id.option3);
         opt4=(TextView)findViewById(R.id.option4);
         pmsg=(TextView)findViewById(R.id.pmsg);
-        qid=++Data.qid;
+        selectedSurvey=getIntent().getStringExtra("selectedSurvey");
         totalquestion=Data.total;
         qno.setText("Q "+qid+". ");
         pmsg.setText(qid+"/"+totalquestion);
         DBHandler get= new DBHandler(this);
         // retreiving Details
         Log.d("Retreive: ", "Retreiving ..");
-        Details_db data= get.getQuestion(1);
+        Details_db data= get.getQuestion("creed",1);
         // get.close();
 //        tv.setText(data);
         question.setText(data.getQuestion());
