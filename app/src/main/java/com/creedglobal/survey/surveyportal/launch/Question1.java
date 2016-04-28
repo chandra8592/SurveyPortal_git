@@ -38,6 +38,7 @@ public class Question1 extends AppCompatActivity {
         DBHandler get= new DBHandler(this);
         // retreiving Details
 
+
         Log.d("Retreive: ", "Retreiving ..");
         Details_db data= get.getQuestion("creed",1);
         // get.close();
