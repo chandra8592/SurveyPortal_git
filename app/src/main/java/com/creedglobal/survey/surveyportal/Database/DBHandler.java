@@ -146,6 +146,8 @@ public class DBHandler extends SQLiteOpenHelper {
         // return contact
         return detail;
     }
+
+
     // Getting All Contacts
     public List<Details_db> getAllContacts() {
         List<Details_db> detailsList = new ArrayList<Details_db>();

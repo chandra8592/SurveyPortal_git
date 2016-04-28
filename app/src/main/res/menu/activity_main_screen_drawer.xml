@@ -14,14 +14,15 @@
             android:id="@+id/nav_upgrade"
             android:icon="@android:drawable/ic_menu_upload"
             android:title="Upgrades"/>
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools"/>
+
         <item
             android:id="@+id/nav_sync"
             android:icon="@android:drawable/stat_notify_sync"
             android:title="Sync"/>
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Settings"/>
 
     </group>
 
