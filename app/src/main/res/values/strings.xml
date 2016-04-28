@@ -37,5 +37,16 @@
     <string name="enter_your_question">Enter Your Question</string>
     <string name="title_activity_result">Result</string>
     <string name="submit">Submit</string>
+    <string name="our_headquarters">Our Headquarters(India)</string>
+    <string name="head_add">Creed Technologies Pvt. Ltd.\n Level 9th, Delta Block,\n Sigma Tech-Park,\n Whitefield Main Road, Whitefield \n Bangalore 560 066.</string>
+    <string name="head_us">USA</string>
+    <string name="head_usa_add">1200 O St #213,\n Sacramento, CA 95811, \n United States.\n Ph : +1 800 295 9785</string>
+    <string name="tel">Tel :</string>
+    <string name="tel_phone">+91-80-8848 4807 \n+91-80-4917 7142</string>
+    <string name="email">Email :</string>
+    <string name="web_add">info@creedglobal.com</string>
+    <string name="website">Website :</string>
+    <string name="com_web_add">www.creedglobal.com</string>
+    <string name="title_activity_support">Support</string>
 
 </resources>
