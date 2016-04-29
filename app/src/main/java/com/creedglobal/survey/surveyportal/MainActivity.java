@@ -1,20 +1,29 @@
 package com.creedglobal.survey.surveyportal;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-
-import com.creedglobal.survey.surveyportal.infox.Teams;
+//
+//import com.creedglobal.survey.surveyportal.infox.Teams;
+import com.creedglobal.survey.surveyportal.Database.CommonUtil;
+import com.creedglobal.survey.surveyportal.Database.Webservice;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -24,13 +33,21 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String TAG = "MainActivity";
+    EditText email_id, password;
+    String email, pswd;
     CallbackManager callbackManager;
-    LoginButton loginButton;
+    Button loginButton,SignButton;
+    SharedPreferences sharedpreferences;
     Profile profile;
     boolean loginStatus = false;
     int id = 1;
@@ -48,7 +65,11 @@ public class MainActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_main);
-        loginButton = (LoginButton) findViewById(R.id.login_button);
+        sharedpreferences = getSharedPreferences("myPref", Context.MODE_PRIVATE);
+        email_id = (EditText) findViewById(R.id.email);
+        password = (EditText) findViewById(R.id.pswd);
+        SignButton=(Button)findViewById(R.id.button3);
+        loginButton = (Button) findViewById(R.id.button);
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
         if (loginStatus = false) {
             startActivity(new Intent(getApplicationContext(), MainScreen.class));
@@ -68,45 +89,67 @@ public class MainActivity extends AppCompatActivity {
             flipper.setFlipInterval(2000);
 
             // Facebook login integration
-            loginButton.setReadPermissions("email", "user_friends");
-            callbackManager = CallbackManager.Factory.create();
-            loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-                @Override
-                public void onSuccess(LoginResult loginResult) {
-                    Log.i("my_info", "Login Success");
-                    Log.i("my_info", "userid =>" + loginResult.getAccessToken().getUserId());
-                    profile = Profile.getCurrentProfile();
-                    String name = profile.getFirstName();
-                    Log.i("my_info", "Name :" + name);
-                    startActivity(new Intent(getApplicationContext(), MainScreen.class));
-                }
-                @Override
-                public void onCancel() {
-                    Log.i("my_info", "Login Cancel");
-                }
-                @Override
-                public void onError(FacebookException error) {
-                    Log.i("my_info", "Login Error");
-                }
-            });
+//            loginButton.setReadPermissions("email", "user_friends");
+//            callbackManager = CallbackManager.Factory.create();
+//            loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+//                @Override
+//                public void onSuccess(LoginResult loginResult) {
+//                    Log.i("my_info", "Login Success");
+//                    Log.i("my_info", "userid =>" + loginResult.getAccessToken().getUserId());
+//                    profile = Profile.getCurrentProfile();
+//                    String name = profile.getFirstName();
+//                    Log.i("my_info", "Name :" + name);
+//                    startActivity(new Intent(getApplicationContext(), MainScreen.class));
+//                }
+//                @Override
+//                public void onCancel() {
+//                    Log.i("my_info", "Login Cancel");
+//                }
+//                @Override
+//                public void onError(FacebookException error) {
+//                    Log.i("my_info", "Login Error");
+//                }
+//            });
 //            End of facebook integration.
 
             // to print the hash key for facebook purpose
-            try {
-                PackageInfo info = getPackageManager().getPackageInfo("com.facebook.samples.loginhowto", PackageManager.GET_SIGNATURES);
-                for (Signature signature : info.signatures) {
-                    MessageDigest md = MessageDigest.getInstance("SHA");
-                    md.update(signature.toByteArray());
-                    Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-                }
-            } catch (PackageManager.NameNotFoundException e) {
-
-            } catch (NoSuchAlgorithmException e) {
-
-            }
+//            try {
+//                PackageInfo info = getPackageManager().getPackageInfo("com.facebook.samples.loginhowto", PackageManager.GET_SIGNATURES);
+//                for (Signature signature : info.signatures) {
+//                    MessageDigest md = MessageDigest.getInstance("SHA");
+//                    md.update(signature.toByteArray());
+//                    Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//                }
+//            } catch (PackageManager.NameNotFoundException e) {
+//
+//            } catch (NoSuchAlgorithmException e) {
+//
+//            }
             // end of hash key
         }
+        loginButton.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+
+
+                if (checkInternetConenction()) {
+                    login();
+                }
+
+            }
+        });
+        SignButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+             Intent i= new Intent(MainActivity.this,Registration.class);
+                startActivity(i);
+
+
+            }
+        });
     }
 
     @Override
@@ -116,19 +159,163 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void gotoRegister(View view) {
-        startActivity(new Intent(getApplicationContext(), Registration.class));
-    }
-
-    public void forgotPassword(View view) {
-        startActivity(new Intent(getApplicationContext(), Forgot.class));
-    }
+//    public void gotoRegister(View view) {
+//        startActivity(new Intent(getApplicationContext(), Registration.class));
+//    }
+//
+//    public void forgotPassword(View view) {
+//        startActivity(new Intent(getApplicationContext(), Forgot.class));
+//    }
 
     public void gotoHome(View view) {
         startActivity(new Intent(getApplicationContext(), MainScreen.class));
     }
-    public void gotoInfox(View view){
-        startActivity(new Intent(getApplicationContext(), Teams.class));
+//    public void gotoInfox(View view){
+//        startActivity(new Intent(getApplicationContext(), Teams.class));
+//    }
+
+    public void login() {
+        Log.d(TAG, "Login");
+
+        if (!validate()) {
+            onLoginFailed();
+            return;
+        }
+
+        loginButton.setEnabled(false);
+
+        final ProgressDialog progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("Authenticating...");
+        progressDialog.show();
+
+        email = email_id.getText().toString();
+        pswd = password.getText().toString();
+
+        // TODO: Implement your own authentication logic here.
+
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        // On complete call either onLoginSuccess or onLoginFailed
+                        onLoginSuccess();
+                        // onLoginFailed();
+                        progressDialog.dismiss();
+                    }
+                }, 3000);
     }
 
+    public boolean validate() {
+        boolean valid = true;
+
+        String email = email_id.getText().toString();
+        String pswd = password.getText().toString();
+
+        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            email_id.setError("enter a valid email address");
+            valid = false;
+        } else {
+            email_id.setError(null);
+        }
+
+        if (pswd.isEmpty() || pswd.length() < 4 || pswd.length() > 10) {
+            password.setError("between 4 and 10 alphanumeric characters");
+            valid = false;
+        } else {
+            password.setError(null);
+        }
+        return valid;
+    }
+
+    public void onLoginSuccess() {
+        loginButton.setEnabled(true);
+        new login().execute(new String[]{CommonUtil.SERVER_URL + CommonUtil.login, email, pswd});
+    }
+
+    public void onLoginFailed() {
+        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+
+        loginButton.setEnabled(true);
+    }
+
+    private boolean checkInternetConenction() {
+        // get Connectivity Manager object to check connection
+        ConnectivityManager connec = (ConnectivityManager) getSystemService(getBaseContext().CONNECTIVITY_SERVICE);
+
+        // Check for network connections
+        if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED ||
+
+                connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTING ||
+                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTING ||
+                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTED) {
+            return true;
+        } else if (
+                connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.DISCONNECTED ||
+                        connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.DISCONNECTED) {
+            Toast.makeText(this, " No Connection.Please Try Again. ", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return false;
+    }
+
+
+    class login extends AsyncTask<String, Void, JSONObject> {
+
+        private ProgressDialog progressdialog;
+        String Json_result;
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+            progressdialog = ProgressDialog.show(
+                    MainActivity.this, "", "Please wait");
+            progressdialog.setCancelable(false);
+            progressdialog.setIndeterminate(true);
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... params) {
+            // TODO Auto-generated method stub
+            Webservice ws = new Webservice();
+            return ws.login(params[0], params[1], params[2]);
+
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject result) {
+            // TODO Auto-generated method stub
+            if (progressdialog.isShowing()) {
+                progressdialog.dismiss();
+            }
+            System.out.println("result::" + result);
+
+            try {
+                Json_result = result.getString("msg");
+
+                if (Json_result.equals("user_found")) {
+                    JSONArray jarray = result.getJSONArray("info");
+                    JSONObject job = jarray.getJSONObject(0);
+                    String id = job.getString("id");
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    editor.putString("id", id);
+                    editor.commit();
+                    Toast.makeText(MainActivity.this, "login_successfully...", Toast.LENGTH_LONG).show();
+                    Intent in = new Intent(MainActivity.this, MainScreen.class);
+                    startActivity(in);
+
+                } else {
+                    Toast.makeText(MainActivity.this, Json_result, Toast.LENGTH_LONG).show();
+                }
+                finish();
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+
+            }
+
+        }
+    }
 }
+
+
+

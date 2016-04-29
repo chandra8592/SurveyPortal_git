@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.creedglobal.survey.surveyportal.Database.DBHandler;
+import com.creedglobal.survey.surveyportal.Database.Details_db;
 import com.creedglobal.survey.surveyportal.Info.Data;
 import com.creedglobal.survey.surveyportal.R;
 
@@ -16,6 +18,7 @@ public class Question4 extends AppCompatActivity {
     TextView qno,question,opt1,opt2,opt3,opt4,pmsg;
     int qid,totalquestion;
     long delayTime=2000;
+    String selectedSurvey;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,10 +30,24 @@ public class Question4 extends AppCompatActivity {
         opt3=(TextView)findViewById(R.id.option3);
         opt4=(TextView)findViewById(R.id.option4);
         pmsg=(TextView)findViewById(R.id.pmsg);
-        qid=++Data.qid;
+        selectedSurvey=getIntent().getStringExtra("selectedSurvey");
         totalquestion=Data.total;
         qno.setText("Q "+qid+". ");
         pmsg.setText(qid+"/"+totalquestion);
+        DBHandler get= new DBHandler(this);
+        // retreiving Details
+
+
+        Log.d("Retreive: ", "Retreiving ..");
+        Details_db data= get.getQuestion("creed",4);
+        // get.close();
+//        tv.setText(data);
+        question.setText(data.getQuestion());
+        opt1.setText(data.getResponse_1());
+        opt2.setText(data.getResponse_2());
+        opt3.setText(data.getResponse_3());
+        opt4.setText(data.getResponse_4());
+
     }
     public void saveAndNext(View view){
         if (view.getId()==R.id.option1){
