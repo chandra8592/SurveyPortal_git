@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#4172d2</color>
+    <color name="colorPrimaryDark">#ae25262d</color>
     <color name="white">#ffffff</color>
     <color name="colorAccent">#FF4081</color>
     <color name="selected">#c8f1088c</color>
@@ -150,6 +150,7 @@
     <color name="DarkBlue">#00008B</color>
     <color name="Navy">#000080</color>
     <color name="Black">#000000</color>
+    <color name="actionbarcustom">#4172d2</color>
 
     <array name="colors">
         <item name="White">@color/White</item>

@@ -14,10 +14,10 @@ import com.creedglobal.survey.surveyportal.Database.DBHandler;
 import com.creedglobal.survey.surveyportal.Info.Constraints;
 import com.creedglobal.survey.surveyportal.R;
 
-public class Question3 extends AppCompatActivity {
+public class Question10 extends AppCompatActivity {
 
     TextView qno, question, opt1, opt2, opt3, opt4, pmsg;
-    int qid = 3, totalquestion;
+    int qid = 10, totalquestion;
     String selectedSurvey = null;
     boolean selected = false;
     private DBHandler db;
@@ -29,6 +29,7 @@ public class Question3 extends AppCompatActivity {
         setContentView(R.layout.activity_question);
         selectedSurvey = getIntent().getStringExtra("TAG_selectedSurvey");
         totalquestion = getIntent().getIntExtra("TAG_totalquestion", 0);
+
         qno = (TextView) findViewById(R.id.qid);
         question = (TextView) findViewById(R.id.question);
         opt1 = (TextView) findViewById(R.id.option1);
@@ -59,8 +60,6 @@ public class Question3 extends AppCompatActivity {
             Toast.makeText(this,"problem in fetching question. Please restart the App",Toast.LENGTH_SHORT);
         }
     }
-
-
     public void saveAndNext(View view) {
         if (view.getId() == R.id.option1) {
             onSelect(opt1);
@@ -75,6 +74,7 @@ public class Question3 extends AppCompatActivity {
             onSelect(opt4);
         }
     }
+
 
     public void onSelect(TextView selectedView) {
 
@@ -91,7 +91,7 @@ public class Question3 extends AppCompatActivity {
                 if (qid == totalquestion) {
                     intent = new Intent(getApplicationContext(), Submit.class);
                 } else {
-                    intent = new Intent(getApplicationContext(), Question4.class);
+                    intent = new Intent(getApplicationContext(), Submit.class);
                 }
                 intent.putExtra("TAG_selectedSurvey", selectedSurvey);
                 intent.putExtra("TAG_totalquestion", totalquestion);
@@ -102,6 +102,6 @@ public class Question3 extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
     }
 }

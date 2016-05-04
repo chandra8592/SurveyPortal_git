@@ -20,8 +20,14 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Survey 1"
         android:id="@+id/survey_id"
+        android:background="@drawable/abc_list_pressed_holo_dark"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:background="@drawable/abc_list_pressed_holo_dark" />
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

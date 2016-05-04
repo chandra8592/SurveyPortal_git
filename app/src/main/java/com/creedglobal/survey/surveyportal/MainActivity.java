@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.ViewFlipper;
 
 
-import com.creedglobal.survey.surveyportal.infox.Teams;
+
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -126,9 +126,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void gotoHome(View view) {
         startActivity(new Intent(getApplicationContext(), MainScreen.class));
-    }
-    public void gotoInfox(View view){
-        startActivity(new Intent(getApplicationContext(), Teams.class));
     }
 
 }
