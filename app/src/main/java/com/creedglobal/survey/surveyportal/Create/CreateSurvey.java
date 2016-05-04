@@ -203,16 +203,17 @@ public class CreateSurvey extends AppCompatActivity {
     public boolean hasTex(int editid) {
         Log.i("infoo","hasText starting");
 
-        vintid =1;
+        vintid =0;
         boolean status=true;
 
         for (int i=1;i<=editid;i++) {
             Log.i("infoo","hasText for-loop starting");
+            vintid++;
             vedit= (EditText) findViewById(vintid);
             if (vedit.getText().length() >0) {
                 Log.i("infoo","hasText for-loop>if .length()>1 starting");
                 status = true;
-                vintid++;
+//                vintid++;
 
             } else {
 
@@ -220,7 +221,7 @@ public class CreateSurvey extends AppCompatActivity {
                 vedit.setError("error ");
                 vedit.requestFocus();
                 status = false;
-                vintid++;
+//                vintid++;
                 return status;
             }
         }
