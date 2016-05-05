@@ -41,10 +41,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
-
+    private static final int REQUEST_SIGNUP = 0;
     private static final String TAG = "MainActivity";
-    EditText email_id, password;
-    String email, pswd;
+    EditText emailtext, passwordtext;
+    String email, password;
     CallbackManager callbackManager;
     Button loginButton,SignButton;
     SharedPreferences sharedpreferences;
@@ -66,11 +66,12 @@ public class MainActivity extends AppCompatActivity {
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_main);
         sharedpreferences = getSharedPreferences("myPref", Context.MODE_PRIVATE);
-        email_id = (EditText) findViewById(R.id.email);
-        password = (EditText) findViewById(R.id.pswd);
+        emailtext = (EditText) findViewById(R.id.email);
+        passwordtext = (EditText) findViewById(R.id.pswd);
         SignButton=(Button)findViewById(R.id.button3);
         loginButton = (Button) findViewById(R.id.button);
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
+
         if (loginStatus = false) {
             startActivity(new Intent(getApplicationContext(), MainScreen.class));
         } else {
@@ -133,12 +134,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                if (checkInternetConenction()) {
+               if (checkInternetConenction()) {
                     login();
-                }
-
             }
+        }
         });
+
         SignButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -152,25 +153,25 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-
-//    public void gotoRegister(View view) {
-//        startActivity(new Intent(getApplicationContext(), Registration.class));
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        callbackManager.onActivityResult(requestCode, resultCode, data);
 //    }
 //
-//    public void forgotPassword(View view) {
-//        startActivity(new Intent(getApplicationContext(), Forgot.class));
+//
+////    public void gotoRegister(View view) {
+////        startActivity(new Intent(getApplicationContext(), Registration.class));
+////    }
+////
+////    public void forgotPassword(View view) {
+////        startActivity(new Intent(getApplicationContext(), Forgot.class));
+////    }
+//
+//    public void gotoHome(View view) {
+//        startActivity(new Intent(getApplicationContext(), MainScreen.class));
 //    }
-
-    public void gotoHome(View view) {
-        startActivity(new Intent(getApplicationContext(), MainScreen.class));
-    }
-//    public void gotoInfox(View view){
+////    public void gotoInfox(View view){
 //        startActivity(new Intent(getApplicationContext(), Teams.class));
 //    }
 
@@ -189,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        email = email_id.getText().toString();
-        pswd = password.getText().toString();
+        email = emailtext.getText().toString();
+        password = passwordtext.getText().toString();
 
         // TODO: Implement your own authentication logic here.
 
@@ -208,28 +209,44 @@ public class MainActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String email = email_id.getText().toString();
-        String pswd = password.getText().toString();
+        String email = emailtext.getText().toString();
+        String password = passwordtext.getText().toString();
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            email_id.setError("enter a valid email address");
+            emailtext.setError("enter a valid email address");
             valid = false;
         } else {
-            email_id.setError(null);
+            emailtext.setError(null);
         }
 
-        if (pswd.isEmpty() || pswd.length() < 4 || pswd.length() > 10) {
-            password.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
+            passwordtext.setError("between 4 and 10 alphanumeric characters");
             valid = false;
         } else {
-            password.setError(null);
+            passwordtext.setError(null);
         }
         return valid;
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_SIGNUP) {
+            if (resultCode == RESULT_OK) {
 
+                // TODO: Implement successful signup logic here
+                // By default we just finish the Activity and log them in automatically
+                this.finish();
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // disable going back to the MainActivity
+        finish();
+    }
     public void onLoginSuccess() {
         loginButton.setEnabled(true);
-        new login().execute(new String[]{CommonUtil.SERVER_URL + CommonUtil.login, email, pswd});
+        new login().execute(new String[]{CommonUtil.SERVER_URL + CommonUtil.login, email, password});
     }
 
     public void onLoginFailed() {
@@ -240,19 +257,20 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean checkInternetConenction() {
         // get Connectivity Manager object to check connection
-        ConnectivityManager connec = (ConnectivityManager) getSystemService(getBaseContext().CONNECTIVITY_SERVICE);
+        ConnectivityManager connec =(ConnectivityManager)getSystemService(getBaseContext().CONNECTIVITY_SERVICE);
 
         // Check for network connections
-        if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED ||
+        if ( connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED ||
 
                 connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTING ||
                 connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTING ||
-                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTED) {
+                connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTED ) {
+            Toast.makeText(this, " Connected ", Toast.LENGTH_LONG).show();
             return true;
-        } else if (
+        }else if (
                 connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.DISCONNECTED ||
-                        connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.DISCONNECTED) {
-            Toast.makeText(this, " No Connection.Please Try Again. ", Toast.LENGTH_LONG).show();
+                        connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.DISCONNECTED  ) {
+            Toast.makeText(this, " Not Connected ", Toast.LENGTH_LONG).show();
             return false;
         }
         return false;

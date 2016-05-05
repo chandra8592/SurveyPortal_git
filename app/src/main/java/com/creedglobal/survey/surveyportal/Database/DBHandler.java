@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -57,7 +58,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_User_Type = "type";
 
 
-
+    SQLiteDatabase newDB;
     public DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -96,7 +97,12 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
     //crud operation for survey
-
+    public Cursor getAllSurvey(){
+        SQLiteDatabase db = this.getReadableDatabase();
+//        "select rowid as _id,surveyname from  Survey";
+        String query="select distinct surveyname as _id from  Survey";
+        return db.rawQuery(query,null);
+    }
     // Adding new contact
     public void addDetails(Details_db details) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -479,5 +485,45 @@ public class DBHandler extends SQLiteOpenHelper {
         // return count
         return cursor_customer.getCount();
     }
+    public Cursor selectQuery(String query) {
+        Cursor c1 = null;
+        try {
+
+            if (newDB.isOpen()) {
+                newDB.close();
+
+            }
+            SQLiteDatabase db = this.getWritableDatabase();
+            c1 = db.rawQuery(query, null);
+
+        } catch (Exception e) {
+
+            System.out.println("DATABASE ERROR " + e);
+
+        }
+        return c1;
+}
+//private void openAndQueryDatabase() {
+//    try {
+//        DBHandler dbHelper = new DBHandler(this.);
+//        newDB = dbHelper.getWritableDatabase();
+//        Cursor c = newDB.rawQuery("SELECT Surveyname  FROM Survey", null);
+//        if (c != null ) {
+//            if  (c.moveToFirst()) {
+//                do {
+//                    String Surveyname = c.getString(c.getColumnIndex("Surveyname"));
+//
+//                    results.add("+Surveyname+ " + Surveyname);
+//                }while (c.moveToNext());
+//            }
+//        }
+//    } catch (SQLiteException se ) {
+//        Log.e(getClass().getSimpleName(), "Could not create or Open the database");
+//    } finally {
+//        if (newDB != null)
+//            newDB.execSQL("DELETE FROM Survey" );
+//        newDB.close();
+//    }
+//}
 }
 

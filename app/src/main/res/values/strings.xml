@@ -49,4 +49,7 @@
     <string name="com_web_add">www.creedglobal.com</string>
     <string name="title_activity_support">Support</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

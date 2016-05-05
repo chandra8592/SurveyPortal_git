@@ -106,9 +106,9 @@ public class MainScreen extends AppCompatActivity
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_sync) {
-
+            startActivity(new Intent(getApplicationContext(),SyncFragment.class));
         } else if (id == R.id.nav_about) {
-
+            startActivity(new Intent(getApplicationContext(),FeebackFragment.class));
         } else if (id == R.id.nav_share) {
             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
@@ -123,7 +123,7 @@ public class MainScreen extends AppCompatActivity
             i.setData(Uri.parse(url));
             startActivity(i);
         } else if (id == R.id.nav_feed) {
-
+             startActivity(new Intent(getApplicationContext(),FeebackFragment.class));
         } else if (id == R.id.nav_help) {
             startActivity(new Intent(getApplicationContext(), Support.class));
         }

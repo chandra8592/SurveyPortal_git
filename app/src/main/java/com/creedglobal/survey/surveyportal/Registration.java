@@ -24,9 +24,10 @@ import org.json.JSONObject;
 public class Registration extends AppCompatActivity {
 
     private static final String TAG = "Registration";
-EditText name,sign_email,sign_pass,sign_mobile;
-    String fullname,email_sign,pass_sign,mobile_sign;
+EditText nametext,emailtext,passwordtext,mobiletext,occupationtext;
+    String name,email,password,mobile,occupation;
     Button register;
+
     SharedPreferences sharedpreferences;
     TextView Already_login;
     @Override
@@ -34,16 +35,18 @@ EditText name,sign_email,sign_pass,sign_mobile;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        name=(EditText)findViewById(R.id.fullname);
-        sign_email=(EditText)findViewById(R.id.email_address);
-        sign_pass=(EditText)findViewById(R.id.signpass);
-        sign_mobile=(EditText)findViewById(R.id.sign_mobile);
+        nametext=(EditText)findViewById(R.id.fullname);
+        emailtext=(EditText)findViewById(R.id.email_address);
+        passwordtext=(EditText)findViewById(R.id.signpass);
+        mobiletext=(EditText)findViewById(R.id.sign_mobile);
+        occupationtext=(EditText) findViewById(R.id.occupation);
         register=(Button)findViewById(R.id.button2);
         Already_login=(TextView)findViewById(R.id.textView3);
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(checkInternetConenction())
                 {
                     signup();
@@ -59,10 +62,7 @@ EditText name,sign_email,sign_pass,sign_mobile;
         });
     }
 
-    public void loginPage(View view){
-        startActivity(new Intent(getApplicationContext(),MainActivity.class));
-        finish();
-    }
+
     public void signup() {
         Log.d(TAG, "Signup");
 
@@ -78,11 +78,11 @@ EditText name,sign_email,sign_pass,sign_mobile;
         progressDialog.setMessage("Creating Account...");
         progressDialog.show();
 
-        fullname = name.getText().toString();
-        email_sign = sign_email.getText().toString();
-        pass_sign = sign_pass.getText().toString();
-        mobile_sign= sign_mobile.getText().toString();
-
+        name = nametext.getText().toString();
+        email = emailtext.getText().toString();
+        password = passwordtext.getText().toString();
+        mobile= mobiletext.getText().toString();
+        occupation=occupationtext.getText().toString();
         // TODO: Implement your own signup logic here.
 
         new android.os.Handler().postDelayed(
@@ -100,11 +100,11 @@ EditText name,sign_email,sign_pass,sign_mobile;
     public void onSignupSuccess() {
         register.setEnabled(true);
         setResult(RESULT_OK, null);
-        new Register().execute(new String[]{CommonUtil.SERVER_URL + CommonUtil.cust_signup, fullname, email_sign, pass_sign,mobile_sign});
+        new Register().execute(new String[]{CommonUtil.SERVER_URL + CommonUtil.cust_signup, name, email, password, mobile, occupation});
 
     }
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), "signup failed", Toast.LENGTH_LONG).show();
 
         register.setEnabled(true);
     }
@@ -112,38 +112,43 @@ EditText name,sign_email,sign_pass,sign_mobile;
     public boolean validate() {
         boolean valid = true;
 
-        String fullname = name.getText().toString();
-        String email_sign = sign_email.getText().toString();
-        String pass_sign = sign_pass.getText().toString();
-        String mobile_sign= sign_mobile.getText().toString();
-
-        if (fullname.isEmpty() || fullname.length() < 6) {
-            name.setError("at least 3 characters");
+        String name = nametext.getText().toString();
+        String email = emailtext.getText().toString();
+        String password = passwordtext.getText().toString();
+        String mobile= mobiletext.getText().toString();
+        String occupation= occupationtext.getText().toString();
+        if (name.isEmpty() || name.length() < 6) {
+            nametext.setError("at least 3 characters");
             valid = false;
         } else {
-            name.setError(null);
+            nametext.setError(null);
         }
 
-        if (email_sign.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email_sign).matches()) {
-            sign_email.setError("enter a valid email address");
+        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailtext.setError("enter a valid email address");
             valid = false;
         } else {
-            sign_email.setError(null);
+            emailtext.setError(null);
         }
 
-        if (pass_sign.isEmpty() || pass_sign.length() < 4 || pass_sign.length() > 10) {
-            sign_pass.setError("between 4 and 10 alphanumeric characters");
+        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
+            passwordtext.setError("between 4 and 10 alphanumeric characters");
             valid = false;
         } else {
-            sign_pass.setError(null);
+            passwordtext.setError(null);
         }
-        if (mobile_sign.isEmpty() || mobile_sign.length() < 10 || mobile_sign.length() > 10) {
-            sign_mobile.setError("Enter Valid Mobile Number");
+        if (mobile.isEmpty() || mobile.length() < 10 || mobile.length() > 10) {
+            mobiletext.setError("Enter Valid Mobile Number");
             valid = false;
         } else {
-            sign_pass.setError(null);
+            mobiletext.setError(null);
         }
-
+        if (occupation.isEmpty() || occupation.length() < 5) {
+            occupationtext.setError("at least 5 characters");
+            valid = false;
+        } else {
+            occupationtext.setError(null);
+        }
         return valid;
     }
 
@@ -168,7 +173,7 @@ EditText name,sign_email,sign_pass,sign_mobile;
             // TODO Auto-generated method stub
             Webservice ws = new Webservice();
             return ws.signup(params[0], params[1], params[2],
-                    params[3],params[4]);
+                    params[3],params[4],params[5]);
         }
 
         @Override
@@ -186,7 +191,7 @@ EditText name,sign_email,sign_pass,sign_mobile;
 
             }
             if (Json_result.equals("user_added")) {
-                new login().execute(new String[]{CommonUtil.SERVER_URL + CommonUtil.confirm_login, email_sign, pass_sign});
+                new login().execute(new String[]{CommonUtil.SERVER_URL + CommonUtil.confirm_login, email, password});
             }
             else
                 Toast.makeText(Registration.this, Json_result, Toast.LENGTH_LONG).show();
@@ -197,7 +202,7 @@ EditText name,sign_email,sign_pass,sign_mobile;
         ConnectivityManager connec = (ConnectivityManager) getSystemService(getBaseContext().CONNECTIVITY_SERVICE);
 
         // Check for network connections
-        if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED ||
+         if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED ||
 
                 connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTING ||
                 connec.getNetworkInfo(1).getState() == android.net.NetworkInfo.State.CONNECTING ||
