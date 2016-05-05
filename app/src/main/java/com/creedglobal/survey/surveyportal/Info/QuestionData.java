@@ -10,8 +10,10 @@ public class QuestionData {
     private String question;
     private String option1;
     private String option2;
+    private String option3;
+    private String option4;
     public String QuestionOption[][];
-    public static List<QuestionData> dataList;
+    public static List<QuestionData> quetionList;
 
     public String getQid() {
         return qid;
@@ -61,7 +63,5 @@ public class QuestionData {
         this.option4 = option4;
     }
 
-    private String option3;
-    private String option4;
 
 }

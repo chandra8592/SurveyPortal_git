@@ -12,13 +12,14 @@ import android.widget.Toast;
 
 import com.creedglobal.survey.surveyportal.Database.DBHandler;
 import com.creedglobal.survey.surveyportal.Info.Constraints;
+import com.creedglobal.survey.surveyportal.Info.Result;
 import com.creedglobal.survey.surveyportal.MainScreen;
 import com.creedglobal.survey.surveyportal.R;
 
 public class Question1 extends AppCompatActivity {
 
     TextView qno, question, opt1, opt2, opt3, opt4, pmsg;
-    int qid = 1, totalquestion;
+    int qid = 1, totalquestion,selectedOption;
     DBHandler db=null;
     String selectedSurvey = null;
     boolean selected = false;
@@ -64,18 +65,29 @@ public class Question1 extends AppCompatActivity {
     }
 
     public void saveAndNext(View view) {
+//        Result.selectedOption=null;
+//        Result.selectedOptionNumber=null;
         if (view.getId() == R.id.option1) {
+            captureSelectedData(view,1);
             onSelect(opt1);
         }
         if (view.getId() == R.id.option2) {
+            captureSelectedData(view,2);
             onSelect(opt2);
         }
         if (view.getId() == R.id.option3) {
+            captureSelectedData(view,3);
             onSelect(opt3);
         }
         if (view.getId() == R.id.option4) {
+            captureSelectedData(view,4);
             onSelect(opt4);
         }
+    }
+    private void captureSelectedData(View viewid,int selectedOption){
+        this.selectedOption=selectedOption;
+        Result.selectedOption[qid-1]=((TextView)viewid).getText().toString();
+        Result.selectedOptionNumber[qid-1]=selectedOption;
     }
 
     public void onSelect(TextView selectedView) {
@@ -100,11 +112,5 @@ public class Question1 extends AppCompatActivity {
                 startActivity(intent);
             }
         }, Constraints.delayTimeOut);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        startActivity(new Intent(getApplicationContext(),MainScreen.class));
     }
 }

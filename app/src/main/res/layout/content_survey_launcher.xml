@@ -16,13 +16,13 @@
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:gravity="center"
-        android:onClick="startSurvey"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Survey 1"
-        android:id="@+id/survey_id"
+        android:text="Opsss...! create survey first"
+        android:id="@+id/btn_nosurveymsg"
         android:background="@drawable/abc_list_pressed_holo_dark"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible" />
 
     <ListView
         android:layout_width="match_parent"

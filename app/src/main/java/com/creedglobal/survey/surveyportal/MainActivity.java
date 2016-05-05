@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 
-
+import com.creedglobal.survey.surveyportal.Database.DBHandler;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -31,7 +33,10 @@ public class MainActivity extends AppCompatActivity {
 
     CallbackManager callbackManager;
     LoginButton loginButton;
+    DBHandler db;
     Profile profile;
+    EditText edt_usr,edt_pwd;
+    String username,password;
     boolean loginStatus = false;
     int id = 1;
     ViewFlipper flipper;
@@ -45,9 +50,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db=new DBHandler(this);
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_main);
+        edt_usr= (EditText) findViewById(R.id.edt_username);
+        edt_pwd= (EditText) findViewById(R.id.edt_password);
         loginButton = (LoginButton) findViewById(R.id.login_button);
         flipper = (ViewFlipper) findViewById(R.id.viewFlipper);
         if (loginStatus = false) {
@@ -124,8 +132,17 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(getApplicationContext(), Forgot.class));
     }
 
-    public void gotoHome(View view) {
-        startActivity(new Intent(getApplicationContext(), MainScreen.class));
-    }
+    public void clickLogin(View view) {
+        username=edt_usr.getText().toString();
+        password=edt_pwd.getText().toString();
+        if (db.checkLogin(username,password)){
+            Log.i("infoo","Login Success");
+            startActivity(new Intent(getApplicationContext(), MainScreen.class));
 
+        }
+        else {
+            Toast.makeText(this,"Wrong username/password",Toast.LENGTH_LONG).show();
+            Log.i("infoo","Login Failed");
+        }
+    }
 }

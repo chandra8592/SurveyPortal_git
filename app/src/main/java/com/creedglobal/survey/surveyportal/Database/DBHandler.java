@@ -2,37 +2,31 @@ package com.creedglobal.survey.surveyportal.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.creedglobal.survey.surveyportal.Info.QuestionData;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by cp on 4/20/2016.
  */
 public class DBHandler extends SQLiteOpenHelper {
+    String queryString;
 
     // Database Version
     private static final int DATABASE_VERSION = 5;
 
     // Database Name
-    private static final String DATABASE_NAME = "SurveyPortal";
+    private static final String DATABASE_NAME = "SurveyPortal.db";
 
     // Contacts table name
-    public static final String TABLE_NAME_SURVEY = "Survey";
-    public static final String TABLE_NAME_USER = "Survey_user";
-    public static final String TABLE_NAME_CUSTOMER = "Survey_customer";
-    // Contacts Table Columns names
+    public static final String TABLE_NAME_SURVEY = "Survey";         // to store data when user create a survey
+    public static final String TABLE_NAME_USER = "Survey_user";     //  to store user details when signup/edit
+    public static final String TABLE_NAME_CUSTOMER = "Survey_customer"; // to store customer detail after completed the survey. when click on SUBMIT button
+    // Survey Table Columns names
     private static final String KEY_QID = "Qid";
     private static final String KEY_Surveyname = "surveyname";
     private static final String KEY_Question = "question";
@@ -41,8 +35,8 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_RESPONSE_3 = "option_3";
     private static final String KEY_RESPONSE_4 = "option_4";
 
-    //Survey_user table columns
-    private static final String KEY_Username = "username";
+    //Survey_customer table columns
+    private static final String KEY_Username = "username";      // to Capture Full Name
     private static final String KEY_Mobile = "mobile";
     private static final String KEY_Email = "email";
     private static final String KEY_Msg = "message";
@@ -51,12 +45,17 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_Ques_3 = "question3";
     private static final String KEY_Ques_4 = "question4";
     private static final String KEY_Ques_5 = "question5";
+    private static final String KEY_Ques_6 = "question6";
+    private static final String KEY_Ques_7 = "question7";
+    private static final String KEY_Ques_8 = "question8";
+    private static final String KEY_Ques_9 = "question9";
+    private static final String KEY_Ques_10 = "question10";
     private static final String KEY_Temp_1 = "temp_1";
 
-    //Survey_customer table columns
-    private static final String KEY_Adminname = "admin_name";
-    private static final String KEY_Mobile_nos = "mobile";
-    private static final String KEY_Email_id = "email";
+    //Survey_user table columns
+    private static final String KEY_ADMIN_NAME = "admin_name";
+    private static final String KEY_ADMIN_Mobile_nos = "mobile";
+    private static final String KEY_ADMIN_Email_id = "email";
     private static final String KEY_Occupation = "occupation";
     private static final String KEY_Pswd = "password";
     private static final String KEY_Temp_2 = "temp2";
@@ -69,13 +68,28 @@ public class DBHandler extends SQLiteOpenHelper {
             + KEY_Question + " TEXT," + KEY_RESPONSE_1 + " TEXT," + KEY_RESPONSE_2 + " TEXT," + KEY_RESPONSE_3 + " TEXT,"
             + KEY_RESPONSE_4 + " TEXT" + ");";
 
-    private static final String CREATE_TABLE_SURVEY_USER = "CREATE TABLE " + TABLE_NAME_USER
-            + "(" + KEY_Username + " TEXT," + KEY_Mobile + " INTEGER,"
-            + KEY_Email + " VARCHAR," + KEY_Msg + " TEXT, " + KEY_Ques_1 + " TEXT, " + KEY_Ques_2 + " TEXT, " + KEY_Ques_3 + " TEXT, " + KEY_Ques_4 + " TEXT, " + KEY_Ques_5 + " TEXT, " + KEY_Temp_1 + " TEXT " + ");";
-
     private static final String CREATE_TABLE_CUSTOMER = "CREATE TABLE " + TABLE_NAME_CUSTOMER
-            + "(" + KEY_Adminname + " TEXT," + KEY_Mobile_nos + " INTEGER,"
-            + KEY_Email_id + " VARCHAR," + KEY_Occupation + " TEXT, " + KEY_Pswd + " VARCHAR, " + KEY_Temp_2 + " TEXT, " + KEY_Temp_3 + " TEXT, " + KEY_User_Type + " TEXT " + ");";
+            + "("
+            + KEY_Username + " TEXT,"
+            + KEY_Mobile + " INTEGER,"
+            + KEY_Email + " VARCHAR,"
+            + KEY_Msg + " TEXT, "
+            + KEY_Ques_1 + " TEXT, "
+            + KEY_Ques_2 + " TEXT, "
+            + KEY_Ques_3 + " TEXT, "
+            + KEY_Ques_4 + " TEXT, "
+            + KEY_Ques_5 + " TEXT, "
+            + KEY_Ques_6 + " TEXT, "
+            + KEY_Ques_7 + " TEXT, "
+            + KEY_Ques_8 + " TEXT, "
+            + KEY_Ques_9 + " TEXT, "
+            + KEY_Ques_10 + " TEXT, "
+            + KEY_Temp_1 + " TEXT "
+            + ");";
+
+    private static final String CREATE_TABLE_SURVEY_USER = "CREATE TABLE " + TABLE_NAME_USER
+            + "(" + KEY_ADMIN_NAME + " TEXT," + KEY_ADMIN_Mobile_nos + " INTEGER,"
+            + KEY_ADMIN_Email_id + " VARCHAR," + KEY_Occupation + " TEXT, " + KEY_Pswd + " VARCHAR, " + KEY_Temp_2 + " TEXT, " + KEY_Temp_3 + " TEXT, " + KEY_User_Type + " TEXT " + ");";
 
 
     public DBHandler(Context context) {
@@ -148,8 +162,6 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(KEY_RESPONSE_2, details.getResponse_2());
         values.put(KEY_RESPONSE_3, details.getResponse_3());
         values.put(KEY_RESPONSE_4, details.getResponse_4());
-
-
         // Inserting Row
         db.insert(TABLE_NAME_SURVEY, null, values);
         db.close(); // Closing database connection
@@ -160,6 +172,31 @@ public class DBHandler extends SQLiteOpenHelper {
         }
 
         status = true;
+        return status;
+    }
+//    Inserting the data in customer table after completing the survey.
+    public boolean submitResult(String[] args){
+        boolean status=false;
+        SQLiteDatabase db=this.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put(KEY_Ques_1,args[0]);
+        values.put(KEY_Ques_2,args[1]);
+        values.put(KEY_Ques_3,args[2]);
+        values.put(KEY_Ques_4,args[3]);
+        values.put(KEY_Ques_5,args[4]);
+        values.put(KEY_Ques_6,args[5]);
+        values.put(KEY_Ques_7,args[6]);
+        values.put(KEY_Ques_8,args[7]);
+        values.put(KEY_Ques_9,args[8]);
+        values.put(KEY_Ques_10,args[9]);
+        values.put(KEY_Username,args[10]);
+        values.put(KEY_Email,args[11]);
+        values.put(KEY_Mobile,args[12]);
+        values.put(KEY_Msg,args[13]);
+        db.insert(TABLE_NAME_CUSTOMER,null,values);
+        db.close();
+        status=true;
+        Log.i("infoo"," Survey result inserted in DB, with result status "+status);
         return status;
     }
 
@@ -416,9 +453,9 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 //        values.put(KEY_NAME, details.getName()); // Contact Name
 //        values.put(KEY_PHONE, details.getPhone()); // Contact Phone
-        values.put(KEY_Adminname,details_customer.getAdminname());
-        values.put(KEY_Email_id,details_customer.getEmail_id());
-        values.put(KEY_Mobile_nos,details_customer.getMobile_nos());
+        values.put(KEY_ADMIN_NAME,details_customer.getAdminname());
+        values.put(KEY_ADMIN_Email_id,details_customer.getEmail_id());
+        values.put(KEY_ADMIN_Mobile_nos,details_customer.getMobile_nos());
         values.put(KEY_Occupation,details_customer.getOccupation());
         values.put(KEY_Pswd,details_customer.getPswd());
         values.put(KEY_Temp_2,details_customer.getTemp_2());
@@ -437,7 +474,7 @@ public class DBHandler extends SQLiteOpenHelper {
     Customer_details_db getDetails_customer(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_NAME_CUSTOMER, new String[] {  KEY_Adminname,KEY_Mobile_nos,KEY_Email_id,KEY_Occupation,KEY_Pswd,KEY_Temp_2,KEY_Temp_3,KEY_User_Type}, KEY_Email + "=?", new String[] { String.valueOf(id) }, null, null, null, null);
+        Cursor cursor = db.query(TABLE_NAME_CUSTOMER, new String[] {KEY_ADMIN_NAME, KEY_ADMIN_Mobile_nos, KEY_ADMIN_Email_id,KEY_Occupation,KEY_Pswd,KEY_Temp_2,KEY_Temp_3,KEY_User_Type}, KEY_Email + "=?", new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
@@ -490,9 +527,9 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
 //        values.put(KEY_NAME, details.getName());
 //        values.put(KEY_PHONE, details.getPhone());
-        values.put(KEY_Adminname,details_customer.getAdminname());
+        values.put(KEY_ADMIN_NAME,details_customer.getAdminname());
         values.put(KEY_Email,details_customer.getEmail_id());
-        values.put(KEY_Mobile_nos,details_customer.getMobile_nos());
+        values.put(KEY_ADMIN_Mobile_nos,details_customer.getMobile_nos());
         values.put(KEY_Occupation,details_customer.getOccupation());
         values.put(KEY_Pswd,details_customer.getPswd());
         values.put(KEY_Temp_2,details_customer.getTemp_2());
@@ -518,12 +555,23 @@ public class DBHandler extends SQLiteOpenHelper {
 
     // Getting contacts Count
     public int getContactsCount_customer() {
-        String countQuery = "SELECT  * FROM " + TABLE_NAME_CUSTOMER;
+        queryString = "SELECT  * FROM " + TABLE_NAME_CUSTOMER;
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor_customer = db.rawQuery(countQuery, null);
+        Cursor cursor_customer = db.rawQuery(queryString, null);
         cursor_customer.close();
 
         // return count
         return cursor_customer.getCount();
     }
+    public boolean checkLogin(String usr,String pwd){
+        boolean status=false;
+        queryString="select * from "+TABLE_NAME_USER+" where "+KEY_ADMIN_Email_id+"=\""+usr+"\" and "+KEY_Pswd+"=\""+pwd+"\"";
+        SQLiteDatabase db=this.getReadableDatabase();
+        if ((db.rawQuery(queryString,null)).moveToFirst())
+            status = true;
+
+        db.close();
+        return status;
+    }
+
 }

@@ -31,11 +31,10 @@ public class SurveyLauncher extends AppCompatActivity {
         setContentView(R.layout.activity_survey_launcher);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
         lv= (ListView) findViewById(R.id.listView);
         db = new DBHandler(this);
         cursor=db.getAllSurvey();
-
         if (cursor!=null){
             SimpleCursorAdapter adapter=new SimpleCursorAdapter(getApplicationContext(),
                     R.layout.surveyitem,
