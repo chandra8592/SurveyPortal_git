@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.creedglobal.survey.surveyportal.Database.DBHandler;
 import com.creedglobal.survey.surveyportal.Database.Details_db;
+import com.creedglobal.survey.surveyportal.Info.Constraints;
 import com.creedglobal.survey.surveyportal.MainScreen;
 import com.creedglobal.survey.surveyportal.R;
 import com.creedglobal.survey.surveyportal.launch.SurveyLauncher;
@@ -27,7 +28,7 @@ public class CreateSurvey extends AppCompatActivity {
     EditText question_edit, opt1_edit, opt2_edit, opt3_edit, opt4_edit, surveyname_edit,vedit;
     TextView qid_text;
     String surveyName = null;
-    int qid = 0, maxq = 5, minq = 3, vintid = 1;
+    int qid = 0, maxq = 5, minq = Constraints.minq, vintid = 1;
     String question, opt1, opt2, opt3, opt4, opt5;
 
     @Override

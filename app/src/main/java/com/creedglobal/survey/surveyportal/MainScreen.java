@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -29,7 +30,7 @@ public class MainScreen extends AppCompatActivity
         setContentView(R.layout.activity_main_screen);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Button survey=(Button)findViewById(R.id.create_survey);
+        Button survey = (Button) findViewById(R.id.create_survey);
         survey.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,6 +55,7 @@ public class MainScreen extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
     }
 
     @Override
@@ -90,46 +92,68 @@ public class MainScreen extends AppCompatActivity
     }
 
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        Fragment fragment = null;
+        switch (item.getItemId()) {
+            case R.id.nav_home:
+                // fragment = new CheeseListFragment();
+                break;
+            case R.id.nav_survey:
+                startActivity(new Intent(getApplicationContext(), SurveyLauncher.class));
+                break;
+            case R.id.nav_upgrade:
 
-        if (id == R.id.nav_home) {
-            // Handle the camera action
-        } else if (id == R.id.nav_survey) {
-            startActivity(new Intent(getApplicationContext(), SurveyLauncher.class));
+                break;
+            case R.id.nav_sync:
+                fragment = new SyncFragment();
 
-        } else if (id == R.id.nav_upgrade) {
+                break;
+            case R.id.nav_manage:
+                fragment = new SettingsFragment();
+                break;
+            case R.id.nav_about:
 
-        } else if (id == R.id.nav_manage) {
+                break;
+            case R.id.nav_share:
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String shareBody = "http://creedglobal.com/ ";
+                sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "SurveyPortal");
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "Share via"));
 
-        } else if (id == R.id.nav_sync) {
-            startActivity(new Intent(getApplicationContext(),SyncFragment.class));
-        } else if (id == R.id.nav_about) {
-            startActivity(new Intent(getApplicationContext(),FeebackFragment.class));
-        } else if (id == R.id.nav_share) {
-            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-            sharingIntent.setType("text/plain");
-            String shareBody = "http://creedglobal.com/ ";
-            sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "SurveyPortal"    );
+                break;
+            case R.id.nav_rate:
+                String url = "http://creedglobal.com/";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+                break;
+            case R.id.nav_feed:
+                fragment = new FeebackFragment();
+                break;
+            case R.id.nav_help:
+                Intent in = new Intent(MainScreen.this, Support.class);
+                startActivity(in);
+                break;
 
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-            startActivity(Intent.createChooser(sharingIntent, "Share via"));
-        } else if (id == R.id.nav_rate) {
-            String url = "http://creedglobal.com/";
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(url));
-            startActivity(i);
-        } else if (id == R.id.nav_feed) {
-             startActivity(new Intent(getApplicationContext(),FeebackFragment.class));
-        } else if (id == R.id.nav_help) {
-            startActivity(new Intent(getApplicationContext(), Support.class));
         }
+        if (fragment != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, fragment)
+                    .commit();
+            item.setChecked(true);
+           //  drawer.closeDrawers();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        }
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+
+
+        }
     }
-}
+

@@ -12,13 +12,14 @@ import android.widget.Toast;
 
 import com.creedglobal.survey.surveyportal.Database.DBHandler;
 import com.creedglobal.survey.surveyportal.Info.Constraints;
+import com.creedglobal.survey.surveyportal.Info.Result;
 import com.creedglobal.survey.surveyportal.R;
 
 public class Question2 extends AppCompatActivity {
 
 
     TextView qno, question, opt1, opt2, opt3, opt4, pmsg;
-    int qid = 2, totalquestion;
+    int qid = 2, totalquestion,selectedOption;
     String selectedSurvey = null;
     DBHandler db=null;
     boolean selected = false;
@@ -63,19 +64,28 @@ public class Question2 extends AppCompatActivity {
     }
     public void saveAndNext(View view) {
         if (view.getId() == R.id.option1) {
+            captureSelectedData(view,1);
             onSelect(opt1);
         }
         if (view.getId() == R.id.option2) {
+            captureSelectedData(view,2);
             onSelect(opt2);
         }
         if (view.getId() == R.id.option3) {
+            captureSelectedData(view,3);
             onSelect(opt3);
         }
         if (view.getId() == R.id.option4) {
+            captureSelectedData(view,4);
             onSelect(opt4);
         }
     }
 
+    private void captureSelectedData(View viewid,int selectedOption){
+        this.selectedOption=selectedOption;
+        Result.selectedOption[qid]=((TextView)viewid).getText().toString();
+        Result.selectedOptionNumber[qid]=selectedOption;
+    }
 
     public void onSelect(TextView selectedView) {
 

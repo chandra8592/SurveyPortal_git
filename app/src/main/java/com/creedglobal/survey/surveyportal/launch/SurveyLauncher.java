@@ -31,11 +31,10 @@ public class SurveyLauncher extends AppCompatActivity {
         setContentView(R.layout.activity_survey_launcher);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
         lv= (ListView) findViewById(R.id.listView);
         db = new DBHandler(this);
         cursor=db.getAllSurvey();
-
         if (cursor!=null){
             SimpleCursorAdapter adapter=new SimpleCursorAdapter(getApplicationContext(),
                     R.layout.surveyitem,
@@ -64,14 +63,14 @@ public class SurveyLauncher extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
     }
     public void startSurvey(View view){
         Intent i=new Intent(this,Question1.class);

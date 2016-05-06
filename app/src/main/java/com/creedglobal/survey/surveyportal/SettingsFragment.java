@@ -26,10 +26,12 @@ import org.json.JSONObject;
 
 
 public class SettingsFragment extends Fragment {
-    TextView txtName, txtEmail,edtphone;
-    EditText edtoccupation,edt_address;
-Button btn_profile_submit;
+    Context context;
+    TextView txtName, txtEmail, edtphone;
+    EditText edtoccupation, edt_address;
+    Button btn_profile_submit;
     String idmain;
+
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -45,17 +47,18 @@ Button btn_profile_submit;
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
-        Toolbar toolbar=(Toolbar)findViewById(R.id.toolbar);
-        toolbar.setTitle("My Profile");
-        Intent in = this.getIntent();
+        View getView = inflater.inflate(R.layout.fragment_settings, container, false);
+        Toolbar toolbar = (Toolbar) getView.findViewById(R.id.toolbar);
+        toolbar.setTitle("Settings");
+
+        Intent in = getActivity().getIntent();
         idmain = in.getStringExtra("id");
-        txtName = (TextView)findViewById(R.id.txt_fullname);
-        txtEmail = (TextView) findViewById(R.id.txt_email);
-        edtphone = (TextView) findViewById(R.id.edt_Phone);
-        edtoccupation=(EditText) findViewById(R.id.edt_occupation);
-        edt_address=(EditText)findViewById(R.id.edt_address);
-        btn_profile_submit = (Button) findViewById(R.id.btn_submit);
+        txtName = (TextView) getView.findViewById(R.id.txt_fullname);
+        txtEmail = (TextView) getView.findViewById(R.id.txt_email);
+        edtphone = (TextView) getView.findViewById(R.id.edt_Phone);
+        edtoccupation = (EditText) getView.findViewById(R.id.edt_occupation);
+        edt_address = (EditText) getView.findViewById(R.id.edt_address);
+        btn_profile_submit = (Button) getView.findViewById(R.id.btn_submit);
         btn_profile_submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,13 +68,11 @@ Button btn_profile_submit;
                 new Register().execute(new String[]{CommonUtil.SERVER_URL + CommonUtil.profile_entry, occupation, address, idmain});
             }
         });
-        if(checkInternetConenction())
+        if (checkInternetConenction())
             new Info().execute(new String[]{CommonUtil.SERVER_URL + CommonUtil.profile_info});
+
+        return getView;
     }
-
-
-
-
 
 
     @Override
@@ -123,7 +124,7 @@ Button btn_profile_submit;
 
                     String id = c.getString("id");
                     int id1 = Integer.valueOf(id);
-                    if(id.equals(idmain)) {
+                    if (id.equals(idmain)) {
 
                         String name = c.getString("name");
                         String email = c.getString("email");
@@ -187,7 +188,7 @@ Button btn_profile_submit;
 
             try {
                 Json_result = result.getString("msg");
-                finish();
+                getActivity().finish();
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
 
@@ -198,7 +199,7 @@ Button btn_profile_submit;
 
     private boolean checkInternetConenction() {
         // get Connectivity Manager object to check connection
-        ConnectivityManager connec = (ConnectivityManager) getSystemService(getBaseContext().CONNECTIVITY_SERVICE);
+        ConnectivityManager connec = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
         // Check for network connections
         if (connec.getNetworkInfo(0).getState() == android.net.NetworkInfo.State.CONNECTED ||
@@ -216,4 +217,5 @@ Button btn_profile_submit;
         return false;
     }
 
-}
+    }
+

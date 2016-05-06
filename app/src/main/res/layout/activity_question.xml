@@ -3,37 +3,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/ques"
     tools:context="com.creedglobal.survey.surveyportal.launch.Question1">
 
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/questiontitle"
-        layout="@layout/actionbar_question"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+    <!--<include-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/questiontitle"-->
+        <!--layout="@layout/actionbar_question"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_centerHorizontal="true" />-->
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/questiontitle"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Q 1. "
-            android:id="@+id/qid" />
+            android:id="@+id/qid"
+            android:textColor="@color/DarkMagenta" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="What is your Question ?"
-            android:id="@+id/question" />
+            android:id="@+id/question"
+            android:textColor="@color/DarkCyan" />
     </LinearLayout>
 
     <LinearLayout
@@ -47,8 +50,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:textColor="#ffffff"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Option 1"
+            android:textStyle="bold"
             android:id="@+id/option1"
             android:layout_gravity="center_horizontal"
             android:textAlignment="center"
@@ -68,7 +73,9 @@
             android:layout_margin="10dp"
             android:gravity="center_vertical"
             android:onClick="saveAndNext"
-            android:background="@drawable/background_textbox" />
+            android:background="@drawable/background_textbox"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
@@ -81,7 +88,9 @@
             android:layout_margin="10dp"
             android:gravity="center_vertical"
             android:onClick="saveAndNext"
-            android:background="@drawable/background_textbox" />
+            android:background="@drawable/background_textbox"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
@@ -94,7 +103,9 @@
             android:layout_margin="10dp"
             android:gravity="center_vertical"
             android:onClick="saveAndNext"
-            android:background="@drawable/background_textbox" />
+            android:background="@drawable/background_textbox"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <RelativeLayout
@@ -120,6 +131,7 @@
             android:layout_height="wrap_content"
             android:text="1/5"
             android:id="@+id/pmsg"
+            android:textColor="@color/Blue"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/button7"
             android:layout_toStartOf="@+id/button7"

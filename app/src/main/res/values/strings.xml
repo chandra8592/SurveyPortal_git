@@ -16,7 +16,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="already_register_login">Already register ?<u>Login</u></string>
+    <string name="already_register_login">Already registered? <u>Click here</u></string>
     <string name="title_activity_survey_launcher">SurveyLauncher</string>
     <string name="sign_up">Sign Up</string>
 
