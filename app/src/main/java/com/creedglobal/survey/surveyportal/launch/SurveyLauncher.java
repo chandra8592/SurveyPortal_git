@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
@@ -20,16 +19,18 @@ import com.creedglobal.survey.surveyportal.R;
 
 public class SurveyLauncher extends AppCompatActivity {
 
-    String selectedSurvey="creed";
+    String selectedSurvey;
     int totalquestion=10;
     DBHandler db=null;
     Cursor cursor=null;
+    Intent intent;
     ListView lv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_survey_launcher);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
         setSupportActionBar(toolbar);
         lv= (ListView) findViewById(R.id.listView);
         db = new DBHandler(this);
@@ -49,9 +50,17 @@ public class SurveyLauncher extends AppCompatActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Cursor c= (Cursor) lv.getItemAtPosition(position);
-                String selected= c.toString();
-                Log.i("infoo","selected item is : "+selected);
+                cursor= (Cursor) lv.getItemAtPosition(position);
+                selectedSurvey = cursor.getString(0);
+                db=new DBHandler(getApplicationContext());
+                totalquestion=db.getTotalQuestion(selectedSurvey);
+                Log.i("infoo","selected survey is : "+ selectedSurvey+" Total Question: "+totalquestion);
+                db.getQdata(selectedSurvey);
+                intent=new Intent(getApplicationContext(),Question1.class);
+                intent.putExtra("TAG_selectedSurvey",selectedSurvey);
+                intent.putExtra("TAG_totalquestion",totalquestion);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -73,7 +82,25 @@ public class SurveyLauncher extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (cursor!=null){
+            cursor.close();
+        }
+        if (db!=null){
+            db.close();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (cursor!=null){
+            cursor.close();
+        }
+        if (db!=null){
+            db.close();
+        }
     }
+
 }

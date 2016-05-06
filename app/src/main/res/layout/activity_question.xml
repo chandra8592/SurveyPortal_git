@@ -3,17 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.creedglobal.survey.surveyportal.launch.Question1">
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/questiontitle"
+        layout="@layout/actionbar_question"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/questiontitle"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp">
 
@@ -108,7 +112,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/button6"
             android:background="@drawable/abc_list_longpressed_holo"
-            android:text="prev" />
+            android:text="prevk"
+            android:visibility="invisible" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -129,7 +134,8 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:background="@drawable/abc_list_longpressed_holo"
-            android:text="next" />
+            android:text="next"
+            android:visibility="invisible" />
 
     </RelativeLayout>
 

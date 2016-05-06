@@ -116,7 +116,7 @@
             android:layout_height="wrap_content"
             android:text="@string/forgot_password"
             android:id="@+id/textView"
-            android:onClick="gotoInfox" />
+            android:onClick="forgotPassword" />
 
 
     </RelativeLayout>

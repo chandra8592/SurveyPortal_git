@@ -1,82 +1,108 @@
 package com.creedglobal.survey.surveyportal.launch;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.creedglobal.survey.surveyportal.Database.DBHandler;
-import com.creedglobal.survey.surveyportal.Database.Details_db;
-import com.creedglobal.survey.surveyportal.Info.Data;
+import com.creedglobal.survey.surveyportal.Info.Constraints;
 import com.creedglobal.survey.surveyportal.R;
 
 public class Question2 extends AppCompatActivity {
 
 
-    TextView qno,question,opt1,opt2,opt3,opt4,pmsg;
-    int qid,totalquestion;
-    String selectedSurvey;
-    long delayTime=2000;
+    TextView qno, question, opt1, opt2, opt3, opt4, pmsg;
+    int qid = 2, totalquestion;
+    String selectedSurvey = null;
+    DBHandler db=null;
+    boolean selected = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_question2);
-        qno=(TextView)findViewById(R.id.qid);
-        question=(TextView)findViewById(R.id.question);
-        opt1=(TextView)findViewById(R.id.option1);
-        opt2=(TextView)findViewById(R.id.option2);
-        opt3=(TextView)findViewById(R.id.option3);
-        opt4=(TextView)findViewById(R.id.option4);
-        pmsg=(TextView)findViewById(R.id.pmsg);
-        selectedSurvey=getIntent().getStringExtra("selectedSurvey");
-        totalquestion=Data.total;
-        qno.setText("Q "+qid+". ");
-        pmsg.setText(qid+"/"+totalquestion);
-        DBHandler get= new DBHandler(this);
+        setContentView(R.layout.activity_question);
+        selectedSurvey = getIntent().getStringExtra("TAG_selectedSurvey");
+        totalquestion = getIntent().getIntExtra("TAG_totalquestion", 0);
+
+        qno = (TextView) findViewById(R.id.qid);
+        question = (TextView) findViewById(R.id.question);
+        opt1 = (TextView) findViewById(R.id.option1);
+        opt2 = (TextView) findViewById(R.id.option2);
+        opt3 = (TextView) findViewById(R.id.option3);
+        opt4 = (TextView) findViewById(R.id.option4);
+        pmsg = (TextView) findViewById(R.id.pmsg);
+        qno.setText("Q " + qid + ". ");
+        pmsg.setText(qid + "/" + totalquestion);
+
+        db = new DBHandler(this);
         // retreiving Details
+        Cursor c=db.getQdata(selectedSurvey);
+        Log.d("Retreive: ", "Retreiving ...qid "+qid);
 
-
-        Log.d("Retreive: ", "Retreiving ..");
-        Details_db data= get.getQuestion("creed",2);
-        // get.close();
-//        tv.setText(data);
-        question.setText(data.getQuestion());
-        opt1.setText(data.getResponse_1());
-        opt2.setText(data.getResponse_2());
-        opt3.setText(data.getResponse_3());
-        opt4.setText(data.getResponse_4());
-
+        if (c.moveToPosition(qid-1)){
+            question.setText(c.getString(2));
+            opt1.setText(c.getString(3));
+            opt2.setText(c.getString(4));
+            opt3.setText(c.getString(5));
+            opt4.setText(c.getString(6));
+            if (c!=null){
+                c.close();
+                db.close();
+            }
+        }
+        else {
+            Toast.makeText(this,"problem in fetching question. Please restart the App",Toast.LENGTH_SHORT);
+        }
     }
-    public void saveAndNext(View view){
-        if (view.getId()==R.id.option1){
+    public void saveAndNext(View view) {
+        if (view.getId() == R.id.option1) {
             onSelect(opt1);
         }
-        if (view.getId()==R.id.option2){
+        if (view.getId() == R.id.option2) {
             onSelect(opt2);
         }
-        if (view.getId()==R.id.option3){
+        if (view.getId() == R.id.option3) {
             onSelect(opt3);
         }
-        if (view.getId()==R.id.option4) {
+        if (view.getId() == R.id.option4) {
             onSelect(opt4);
         }
     }
-    public void onSelect(TextView selectedView){
 
-        opt1.setBackgroundColor(getResources().getColor(R.color.unselected));
-        opt2.setBackgroundColor(getResources().getColor(R.color.unselected));
-        opt3.setBackgroundColor(getResources().getColor(R.color.unselected));
-        opt4.setBackgroundColor(getResources().getColor(R.color.unselected));
-        selectedView.setBackgroundColor(getResources().getColor(R.color.selected));
-        Log.i("my_info",selectedView.getText().toString());
+
+    public void onSelect(TextView selectedView) {
+
+        opt1.setBackgroundResource(R.drawable.unselected);
+        opt2.setBackgroundResource(R.drawable.unselected);
+        opt3.setBackgroundResource(R.drawable.unselected);
+        opt4.setBackgroundResource(R.drawable.unselected);
+        selectedView.setBackgroundResource(R.drawable.selected);
+        Log.i("my_info", selectedView.getText().toString());
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(getApplicationContext(),Question3.class));
+                Intent intent;
+                if (qid == totalquestion) {
+                    intent = new Intent(getApplicationContext(), Submit.class);
+                } else {
+                    intent = new Intent(getApplicationContext(), Question3.class);
+                }
+                intent.putExtra("TAG_selectedSurvey", selectedSurvey);
+                intent.putExtra("TAG_totalquestion", totalquestion);
+                startActivity(intent);
             }
-        },delayTime);
+        }, Constraints.delayTimeOut);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

@@ -73,11 +73,15 @@
             android:name=".MainScreen"
             android:label="@string/title_activity_main_screen"
             android:theme="@style/AppTheme" />
-        <activity android:name=".infox.Teams" />
+
         <activity
             android:name=".Support"
             android:label="@string/title_activity_support"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".launch.Question7" />
+        <activity android:name=".launch.Question8" />
+        <activity android:name=".launch.Question9" />
+        <activity android:name=".launch.Question10"></activity>
     </application>
 
 </manifest>

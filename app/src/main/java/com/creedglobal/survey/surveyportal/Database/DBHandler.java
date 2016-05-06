@@ -2,14 +2,20 @@ package com.creedglobal.survey.surveyportal.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.creedglobal.survey.surveyportal.Info.QuestionData;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by cp on 4/20/2016.
@@ -28,7 +34,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String TABLE_NAME_CUSTOMER = "Survey_customer";
     // Contacts Table Columns names
     private static final String KEY_QID = "Qid";
-    private static final String KEY_Surveyname="surveyname";
+    private static final String KEY_Surveyname = "surveyname";
     private static final String KEY_Question = "question";
     private static final String KEY_RESPONSE_1 = "option_1";
     private static final String KEY_RESPONSE_2 = "option_2";
@@ -36,7 +42,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_RESPONSE_4 = "option_4";
 
     //Survey_user table columns
-    private static final String KEY_Username="username";
+    private static final String KEY_Username = "username";
     private static final String KEY_Mobile = "mobile";
     private static final String KEY_Email = "email";
     private static final String KEY_Msg = "message";
@@ -48,7 +54,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_Temp_1 = "temp_1";
 
     //Survey_customer table columns
-    private static final String KEY_Adminname="admin_name";
+    private static final String KEY_Adminname = "admin_name";
     private static final String KEY_Mobile_nos = "mobile";
     private static final String KEY_Email_id = "email";
     private static final String KEY_Occupation = "occupation";
@@ -58,24 +64,25 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_User_Type = "type";
 
 
-    SQLiteDatabase newDB;
+    private static final String CREATE_TABLE_NAME_SURVEY = "CREATE TABLE " + TABLE_NAME_SURVEY + "("
+            + KEY_QID + " INTEGER PRIMARY KEY AUTOINCREMENT ," + KEY_Surveyname + " TEXT ,"
+            + KEY_Question + " TEXT," + KEY_RESPONSE_1 + " TEXT," + KEY_RESPONSE_2 + " TEXT," + KEY_RESPONSE_3 + " TEXT,"
+            + KEY_RESPONSE_4 + " TEXT" + ");";
+
+    private static final String CREATE_TABLE_SURVEY_USER = "CREATE TABLE " + TABLE_NAME_USER
+            + "(" + KEY_Username + " TEXT," + KEY_Mobile + " INTEGER,"
+            + KEY_Email + " VARCHAR," + KEY_Msg + " TEXT, " + KEY_Ques_1 + " TEXT, " + KEY_Ques_2 + " TEXT, " + KEY_Ques_3 + " TEXT, " + KEY_Ques_4 + " TEXT, " + KEY_Ques_5 + " TEXT, " + KEY_Temp_1 + " TEXT " + ");";
+
+    private static final String CREATE_TABLE_CUSTOMER = "CREATE TABLE " + TABLE_NAME_CUSTOMER
+            + "(" + KEY_Adminname + " TEXT," + KEY_Mobile_nos + " INTEGER,"
+            + KEY_Email_id + " VARCHAR," + KEY_Occupation + " TEXT, " + KEY_Pswd + " VARCHAR, " + KEY_Temp_2 + " TEXT, " + KEY_Temp_3 + " TEXT, " + KEY_User_Type + " TEXT " + ");";
+
+
     public DBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 //table create statements
 
-    private static final String CREATE_TABLE_NAME_SURVEY = "CREATE TABLE " + TABLE_NAME_SURVEY + "("
-            +KEY_QID+" INTEGER PRIMARY KEY AUTOINCREMENT ," +KEY_Surveyname+" TEXT ,"
-            + KEY_Question + " TEXT," +KEY_RESPONSE_1 + " TEXT," +KEY_RESPONSE_2 + " TEXT," + KEY_RESPONSE_3 + " TEXT,"
-            + KEY_RESPONSE_4 + " TEXT" +");";
-
-    private static final String CREATE_TABLE_SURVEY_USER = "CREATE TABLE " + TABLE_NAME_USER
-            + "(" + KEY_Username + " TEXT," + KEY_Mobile + " INTEGER,"
-            + KEY_Email + " VARCHAR," + KEY_Msg + " TEXT, " + KEY_Ques_1 + " TEXT, " +KEY_Ques_2 + " TEXT, " +KEY_Ques_3 + " TEXT, " +KEY_Ques_4 + " TEXT, " +KEY_Ques_5 + " TEXT, " +KEY_Temp_1 + " TEXT " +");";
-
-    private static final String CREATE_TABLE_CUSTOMER = "CREATE TABLE " + TABLE_NAME_CUSTOMER
-            + "(" + KEY_Adminname + " TEXT," + KEY_Mobile_nos + " INTEGER,"
-            + KEY_Email_id + " VARCHAR," + KEY_Occupation + " TEXT, " + KEY_Pswd + " VARCHAR, "+ KEY_Temp_2 + " TEXT, "  +KEY_Temp_3 + " TEXT, " + KEY_User_Type + " TEXT " +");";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -97,31 +104,63 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
     //crud operation for survey
-    public Cursor getAllSurvey(){
+
+    //    to getAll survey available
+    public Cursor getAllSurvey() {
         SQLiteDatabase db = this.getReadableDatabase();
 //        "select rowid as _id,surveyname from  Survey";
-        String query="select distinct surveyname as _id from  Survey";
-        return db.rawQuery(query,null);
-    }
-    // Adding new contact
-    public void addDetails(Details_db details) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "select distinct surveyname as _id from  Survey";
+        Cursor c = db.rawQuery(query, null);
+//        db.close(); // Closing database connection
+        return c;
 
+    }
+
+    public Cursor getQdata(String surveyName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "select * from survey where surveyname=\"" + surveyName + "\";";
+        Log.i("infoo", "query is :" + query);
+        Cursor c = db.rawQuery(query, null);
+        return c;
+    }
+
+    public int getTotalQuestion(String surveyName) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        int tq = 0;
+        String query = "select * from " + TABLE_NAME_SURVEY + " where " + KEY_Surveyname + "=\"" + surveyName + "\"";
+        Cursor cursor = db.rawQuery(query, null);
+        tq = cursor.getCount();
+        cursor.close();
+        db.close();
+        return tq;
+    }
+
+    // Adding new contact
+    public boolean addDetails(Details_db details) {
+        boolean status = false;
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 //        values.put(KEY_NAME, details.getName()); // Contact Name
 //        values.put(KEY_PHONE, details.getPhone()); // Contact Phone
-        values.put(KEY_Surveyname,details.getSurveyname());
-        values.put(KEY_Question,details.getQuestion());
-        values.put(KEY_RESPONSE_1,details.getResponse_1());
-        values.put(KEY_RESPONSE_2,details.getResponse_2());
-        values.put(KEY_RESPONSE_3,details.getResponse_3());
-        values.put(KEY_RESPONSE_4,details.getResponse_4());
+        values.put(KEY_Surveyname, details.getSurveyname());
+        values.put(KEY_Question, details.getQuestion());
+        values.put(KEY_RESPONSE_1, details.getResponse_1());
+        values.put(KEY_RESPONSE_2, details.getResponse_2());
+        values.put(KEY_RESPONSE_3, details.getResponse_3());
+        values.put(KEY_RESPONSE_4, details.getResponse_4());
 
 
         // Inserting Row
         db.insert(TABLE_NAME_SURVEY, null, values);
         db.close(); // Closing database connection
-        Log.i("my_info : ","addDetails>DBHandler . details inserted & connection closed ");
+        Log.i("infoo : ", "addDetails>DBHandler . details inserted & connection closed ");
+
+        if (db != null) {
+            db.close();
+        }
+
+        status = true;
+        return status;
     }
 
     // Getting single contact
@@ -141,6 +180,7 @@ public class DBHandler extends SQLiteOpenHelper {
         List<Details_db> detailsList = new ArrayList<Details_db>();
         Details_db details = new Details_db();
         SQLiteDatabase db = this.getReadableDatabase();
+
 
 //        String smtp=" select * from survey where surveyname=\"creed"+"\" and rowid="+qid;
         String sqlquery=" select * from survey where surveyname=\""+surveyname+"\" and rowid="+qid;
@@ -164,6 +204,8 @@ public class DBHandler extends SQLiteOpenHelper {
         }
         Log.i("my_info: ","getAllContacts>DBHandler. Fething & returning all data");
 
+        cursor.close();
+        db.close();
         // return details list
         return details;
     }
@@ -427,9 +469,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 details_customer.setTemp_2(cursor_customer.getString(5));
                 details_customer.setTemp_3(cursor_customer.getString(6));
                 details_customer.setUser_type(cursor_customer.getString(7));
-
 //                details.setComment(cursor.getString(7));
-
                 // Adding contact to list
                 detailsList_Customer.add(details_customer);
             }
@@ -437,10 +477,11 @@ public class DBHandler extends SQLiteOpenHelper {
             Log.i("my_info: ","getAllContacts>DBHandler. while-loop all data");
         }
         Log.i("my_info: ","getAllContacts>DBHandler. Fething & returning all data");
-
         // return contact list
         return detailsList_Customer;
     }
+
+
 
     // Updating single contact
     public int updateContact_customer(Customer_details_db details_customer) {
@@ -485,45 +526,4 @@ public class DBHandler extends SQLiteOpenHelper {
         // return count
         return cursor_customer.getCount();
     }
-    public Cursor selectQuery(String query) {
-        Cursor c1 = null;
-        try {
-
-            if (newDB.isOpen()) {
-                newDB.close();
-
-            }
-            SQLiteDatabase db = this.getWritableDatabase();
-            c1 = db.rawQuery(query, null);
-
-        } catch (Exception e) {
-
-            System.out.println("DATABASE ERROR " + e);
-
-        }
-        return c1;
 }
-//private void openAndQueryDatabase() {
-//    try {
-//        DBHandler dbHelper = new DBHandler(this.);
-//        newDB = dbHelper.getWritableDatabase();
-//        Cursor c = newDB.rawQuery("SELECT Surveyname  FROM Survey", null);
-//        if (c != null ) {
-//            if  (c.moveToFirst()) {
-//                do {
-//                    String Surveyname = c.getString(c.getColumnIndex("Surveyname"));
-//
-//                    results.add("+Surveyname+ " + Surveyname);
-//                }while (c.moveToNext());
-//            }
-//        }
-//    } catch (SQLiteException se ) {
-//        Log.e(getClass().getSimpleName(), "Could not create or Open the database");
-//    } finally {
-//        if (newDB != null)
-//            newDB.execSQL("DELETE FROM Survey" );
-//        newDB.close();
-//    }
-//}
-}
-
